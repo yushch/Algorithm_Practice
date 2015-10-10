@@ -1,9 +1,9 @@
 class Inversions
-  attr_accessor :number
+  attr_accessor :number #设置公共变量
   
   def initialize
     @number = 0
-    @array = array_set
+    @array = array_set #读数组进去
     #print @array
   end
   
@@ -30,7 +30,7 @@ class Inversions
     array_b = merge_sort(array[num..array.length])
     return merge(array_a, array_b)
   end
-=begin 
+=begin #这种算法不可取，看上去好像很屌，但是stack levels too deep
   def merge(array1, array2)
     i = 0
     j = 0
