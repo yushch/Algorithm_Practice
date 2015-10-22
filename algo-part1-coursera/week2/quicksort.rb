@@ -23,6 +23,7 @@ class QuickSort
       #@comparisons += 1 if array.length == 1
       return array
     end
+=begin
     puts ""
     
     print "array now is #{array}"
@@ -32,7 +33,8 @@ class QuickSort
     p = get_pivot(array)
     
     puts "the pivot is #{p}"
-    
+=end
+    p = get_pivot(array)
     partition_array = partition(array, p)
     index = partition_array.index(p)
     array_first = []
@@ -41,14 +43,14 @@ class QuickSort
     array_second = []
     array_second = partition_array[(index+1)..(partition_array.length-1)] if (index+1 <= partition_array.length - 1)
     @comparisons += array_second.length if array_second.length >= 1
-
+=begin
     print "comparison now is #{@comparisons}" + "\n"
     print "\n"
     print array_first
     print "     "
     print array_second
     puts ""
-
+=end
     #return("false") if @comparisons == 29
     return quick_sort(array_first) + [p] + quick_sort(array_second)
   end
@@ -74,11 +76,15 @@ class QuickSort
   end
   
   def get_pivot(array)
-    #return array.first
-    #return array.last
-    return array[(array.length)/2] if array.length % 2 == 1
-    return array[(array.length)/2 - 1]
-    
+    #return array.first for first case
+    #return array.last for last case
+    a = array.first
+    b = array.last
+    c = array[(array.length)/2] if array.length % 2 == 1
+    c =  array[(array.length)/2 - 1] if array.length % 2 == 0
+    pivot_array = [a,b,c].sort
+    return pivot_array[1]
+
   end
   
   def test_read#this si just for test
@@ -88,8 +94,8 @@ class QuickSort
 end
 
 q =QuickSort.new
-#q.quick_sort(q.array)
-q.quick_sort([3,9,8,4,6,10,2,5,7,1])
+q.quick_sort(q.array)
+#q.quick_sort([3,9,8,4,6,10,2,5,7,1])
 puts ""
 print q.comparisons
 #print q.partition([9,14,13,12,11,10,8,7,6], 9)
