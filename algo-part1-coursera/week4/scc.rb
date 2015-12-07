@@ -23,14 +23,15 @@ class KosaNode
 end
 
 class Kosaraju
-    attr_accessor :graph, :graph_inv, :max, :now
+    attr_accessor :graph, :graph_inv, :max, :now, :node_group
     #
     def initialize
+        @node_group = []
         @now = 1
         @max = 0
         @graph = []
         @graph_inv = []
-        read_edge('minSCC2.txt')   #answer for minSCC should be 6,3,2,1,0 
+        read_edge('SCC.txt')   #answer for minSCC should be 6,3,2,1,0 
         @graph.sort!{|n1,n2| n1.index <=> n2.index}
         @graph_inv.sort!{|n1,n2| n1.index <=> n2.index}
         #puts""
@@ -131,48 +132,48 @@ private
     end
     
     def read_edge(file)
+       node_group_reg = []
+       node_group_inv = []
        File.open(file).each_line do |line|
             temp_array = line.split(" ").map {|num| num.to_i}
             temp_array_inv = [temp_array[1], temp_array[0]]
             puts "reading file in......"
-            merge_graph(@graph, temp_array)
-            merge_graph(@graph_inv, temp_array_inv)
+            @graph, node_group_reg = merge_graph(@graph, temp_array, node_group_reg)
+            @graph_inv, node_group_inv = merge_graph(@graph_inv, temp_array_inv, node_group_inv)
         end
     end
 
-    def merge_graph(graph, temp_array)
+    def merge_graph(graph, temp_array, node_group)
         exist_u = false
         exist_v = false
-        catch :graph_merge do
-            graph.each do |node|
-               if (node.index == temp_array[0] )
-                   exist_u = true
-                   node.merge(temp_array)
-                   throw :graph_merge
-               end
-            end  
+
+        if (node_group.include?(temp_array[0]))
+           exist_u = true
+           find_node(graph, temp_array[0]).merge(temp_array)
         end
-        catch :graph_v_merge do
-            graph.each do |node|
-               if (node.index == temp_array[1] )
-                   exist_v = true
-                   throw :graph_v_merge
-               end
-            end 
+        
+        if (node_group.include?(temp_array[1]))
+           exist_v = true 
         end
+
         if(exist_v == false)
            temp_kosa = KosaNode.new(nil)
            temp_kosa.index = temp_array[1]
            temp_kosa.value = temp_array[1]
            @max = [@max, temp_kosa.value].max
            graph << temp_kosa
+           node_group << temp_kosa.index
+
         end
         
         if(exist_u == false)
            temp_kosa = KosaNode.new(temp_array)
            @max = [@max, temp_kosa.value].max
            graph << temp_kosa
+           node_group << temp_kosa.index
+
         end
+        return graph, node_group
 
     end
     
